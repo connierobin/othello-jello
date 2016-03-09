@@ -14,13 +14,24 @@ Player::Player(Side side) {
      * precalculating things, etc.) However, remember that you will only have
      * 30 seconds.
      */
-     // look I made a small change! 
+    
+    board = new Board();
+    s = side;
+    if(s == WHITE)
+    {
+        s2 = BLACK;
+    }
+    else
+    {
+        s2 = WHITE;
+    }
 }
 
 /*
  * Destructor for the player.
  */
 Player::~Player() {
+    delete board;
 }
 
 /*
@@ -40,5 +51,33 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */ 
+     /*
+      * add opponent's move to the board
+      * check if there are any legal moves
+      *     return NULL
+      * go through board locations
+      *     if it's a legal move
+      *         make the move
+      */
+
+    board->doMove(opponentsMove, s2);
+    if(board->hasMoves(s))
+    {
+        Move *m = new Move(0, 0);
+        for(int i = 0; i < 8; i++)
+        {
+            for(int j = 0; j < 8; j++)
+            {
+                m->setX(i);
+                m->setY(j);
+                if(board->checkMove(m, s))
+                {
+                    board->doMove(m, s);
+                    return m;
+                }
+            }
+        }
+    }
+
     return NULL;
 }
