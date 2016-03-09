@@ -45,6 +45,137 @@ bool Board::onBoard(int x, int y) {
     return(0 <= x && x < 8 && 0 <= y && y < 8);
 }
 
+/* 
+ * Returns an integer score representing how good the given move is for the given side. 
+ * Score is based on the number of stones gained and the board location. 
+ */
+int Board::score(Move *m, Side s)
+{
+    /*
+     * stones = how many stones flip
+     * mult = multiplier based on location
+     * 
+     * Finding stones which flip:
+     * Check each direction sequentially
+     * counter = 0
+     * nextX = x of next place to check
+     * nextY = y of next place to check
+     * while stone at nextX and nextY is the opposite color
+     *      increase the counter
+     * if the next stone is of our color (not blank or an edge)
+     *      add the counter to the main counter
+     */
+
+    int stones = 0;
+    int multiplier = 0;
+    int counter = 0;
+    int x = m->getX();
+    int y = m->getY();
+    Side s2;
+    if(s == BLACK)
+        s2 = WHITE;
+    else
+        s2 = BLACK;
+
+    // first, check the up direction
+    // this should count the number of stones in a row of the opposite
+    // color, but should stop one short of the edge.
+    x -= 1;
+    while(x > 0 && get(s2, x, y))
+    {
+        counter++;
+        x--;
+    }
+    if(counter > 0 && get(s, x, y))
+        stones += counter;
+    x = m->getX();
+    counter = 0;
+
+    // next, check the down direction
+    x += 1;
+    while(x < 7 && get(s2, x, y))
+    {
+        counter++;
+        x++;
+    }
+    if(counter > 0 && get(s, x, y))
+        stones += counter;
+    x = m->getX();
+    counter = 0;
+
+    // next, check to the left
+    y -= 1;
+    while(y > 0 && get(s2, x, y))
+    {
+        counter++;
+        y--;
+    }
+    if(counter > 0 && get(s, x, y))
+        stones += counter;
+    y = m->getY();
+    counter = 0;
+
+    // next, check to the right
+    y += 1;
+    while(y < 7 && get(s2, x, y))
+    {
+        counter++;
+        y++;
+    }
+    if(counter > 0 && get(s, x, y))
+        stones += counter;
+    y = m->getY();
+    counter = 0;
+
+    /* Now we have a stones value. 
+     * Next, we will determine a multiplier. 
+     * The multiplier will be:
+     * 4 for a corner
+     * -3 for diagonally adjacent to a corner
+     * -1 for adjacent to a corner
+     * 2 for an edge
+     * 1 otherwise
+     */
+
+    if(x == 0 || x == 7)
+    {
+        if(y == 0 || y == 7)    // corners
+        {
+            multiplier = 4;
+        }
+        else if(y == 1 || y == 6)   // adjacent to corner vertically
+        {
+            multiplier = -1;
+        }
+        else    // left or right edge
+        {
+            multiplier = 2;
+        }
+    }
+    else if(x == 1 || x == 6)
+    {
+        if(y == 0 || y == 7)    // adjacent to corner horizontally
+        {
+            multiplier = -1;
+        }
+        if(y == 1 || y == 6)    // adjacent to corner diagonally
+        {
+            multiplier = -3;
+        }
+    }
+    else if(y == 0 || y == 7)
+    {
+        multiplier = 2; // top or bottom edge
+    }
+    else
+    {
+        multiplier = 1; // everything else
+    }
+    //cerr << "stones: " << stones << endl;
+    //cerr << "multiplier: " << multiplier << endl;
+    return stones * multiplier;
+}
+
  
 /*
  * Returns true if the game is finished; false otherwise. The game is finished 

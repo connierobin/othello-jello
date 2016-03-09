@@ -20,6 +20,7 @@ public:
     bool testingMinimax;
 private:
 	Board *board;
+	Move *doBasicMove(Move *opponentsMove, int msLeft);
 };
 
 #endif

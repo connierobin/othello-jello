@@ -1,6 +1,7 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
 
+#include <iostream>
 #include <bitset>
 #include "common.h"
 using namespace std;
@@ -15,12 +16,14 @@ private:
     bool get(Side side, int x, int y);
     void set(Side side, int x, int y);
     bool onBoard(int x, int y);
+
       
 public:
     Board();
     ~Board();
     Board *copy();
         
+    int score(Move *m, Side side);
     bool isDone();
     bool hasMoves(Side side);
     bool checkMove(Move *m, Side side);

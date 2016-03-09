@@ -51,14 +51,68 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */ 
+     
      /*
       * add opponent's move to the board
-      * check if there are any legal moves
-      *     return NULL
       * go through board locations
       *     if it's a legal move
-      *         make the move
+      *         calculate the score of the move
+      *         if this is the best score so far, or the only move so far
+      *             store the score and the move
+      * if there were no legal moves
+      *     return NULL
+      * return the move with the best score
       */
+
+    board->doMove(opponentsMove, s2);
+    
+    Move *m = new Move(0, 0);
+    Move *bestm;
+    int score, bestscore;
+    bool hasmove = false;
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            m->setX(i);
+            m->setY(j);
+            if(board->checkMove(m, s))
+            {
+                score = board->score(m, s);
+                if(!hasmove)
+                {
+                    bestm = new Move(i, j);
+                    bestscore = score;
+                    hasmove = true;
+                }
+                else if(score > bestscore)
+                {
+                    bestm->setX(i);
+                    bestm->setY(j);
+                    bestscore = score;
+                }
+            }
+        }
+    }
+
+    if(!hasmove)
+    {
+        return NULL;
+    }
+    board->doMove(bestm, s);
+    return bestm;
+}
+
+Move *Player::doBasicMove(Move *opponentsMove, int msLeft)
+{
+    /*
+     * add opponent's move to the board
+     * check if there are any legal moves
+     *     return NULL
+     * go through board locations
+     *     if it's a legal move
+     *         make the move
+     */
 
     board->doMove(opponentsMove, s2);
     if(board->hasMoves(s))
