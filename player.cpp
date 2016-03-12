@@ -61,8 +61,10 @@ Move *Player::doABMove(Move *opponentsMove, int msLeft)
     Board *tester = board->copy();
     IntMove *result = abBoard(tester, -64, 64, s, s2, 0);
     delete tester;
-    board->doMove(result->getM(), s);
-    return result->getM();
+    Move *myMove = result->getM();
+    delete result;
+    board->doMove(myMove, s);
+    return myMove;
 }
 
 //IntMove *Player::abMove(Board *tester, Move *m, int alpha, int beta, Side side, Side otherSide, int depth)
@@ -98,7 +100,7 @@ IntMove *Player::abBoard(Board *tester, int alpha, int beta, Side side, Side oth
     int score;
     Move *bestMove = new Move(0, 0);
 
-    if(!tester->hasMoves(side) || depth > 9)
+    if(!tester->hasMoves(side) || depth > 8)
     {
         return new IntMove(tester->count(side) - tester->count(otherSide), NULL);
     }
@@ -120,7 +122,7 @@ IntMove *Player::abBoard(Board *tester, int alpha, int beta, Side side, Side oth
                 // get the result for this move by recursively calling this function
                 result = abBoard(temp, -beta, -alpha, otherSide, side, depth + 1);
                 score = -result->getX();
-
+                delete result;
                 delete temp;
 
                 if(score > alpha)
@@ -137,7 +139,6 @@ IntMove *Player::abBoard(Board *tester, int alpha, int beta, Side side, Side oth
         }
     }
     delete m;
-    delete result;
     return new IntMove(alpha, bestMove);
 }
 
