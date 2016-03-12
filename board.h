@@ -22,8 +22,8 @@ public:
     Board();
     ~Board();
     Board *copy();
-        
-    int score(Move *m, Side side);
+
+    int scoreMove(Move *m, Side side);
     bool isDone();
     bool hasMoves(Side side);
     bool checkMove(Move *m, Side side);

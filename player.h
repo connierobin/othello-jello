@@ -4,6 +4,7 @@
 #include <iostream>
 #include "common.h"
 #include "board.h"
+#include "intmove.h"
 using namespace std;
 
 class Player {
@@ -21,6 +22,9 @@ public:
 private:
 	Board *board;
 	Move *doBasicMove(Move *opponentsMove, int msLeft);
+	Move *doHeuristicMove(Move *opponentsMove, int msLeft);
+	Move *doABMove(Move *opponentsMove, int msLeft);
+	IntMove *abBoard(Board *tester, int alpha, int beta, Side side, Side otherSide, int depth);
 };
 
 #endif

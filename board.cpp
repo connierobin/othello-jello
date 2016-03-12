@@ -49,7 +49,7 @@ bool Board::onBoard(int x, int y) {
  * Returns an integer score representing how good the given move is for the given side. 
  * Score is based on the number of stones gained and the board location. 
  */
-int Board::score(Move *m, Side s)
+int Board::scoreMove(Move *m, Side s)
 {
     /*
      * stones = how many stones flip
